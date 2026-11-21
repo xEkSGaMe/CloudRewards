@@ -1,0 +1,370 @@
+pools:
+  NORMAL:
+    - id: break_diamond_ore_4
+      name: "Добыть алмазную руду"
+      description: "Сломайте 4 алмазной руды"
+      material: DIAMOND_ORE
+      type: BREAK_BLOCK
+      target: { materials: [DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE] }
+      amount: 4
+
+    - id: eat_pufferfish
+      name: "Опасная закуска"
+      description: "Съешьте иглобрюха"
+      material: PUFFERFISH
+      type: CONSUME_ITEM
+      target: { materials: [PUFFERFISH] }
+      amount: 1
+
+    - id: swim_1km
+      name: "Пловец"
+      description: "Проплывите 1 км"
+      material: WATER_BUCKET
+      type: STAT_DELTA
+      target: { statistic: SWIM_ONE_CM }
+      amount: 100000
+
+    - id: deal_damage_250
+      name: "Боец"
+      description: "Нанесите 250 урона"
+      material: IRON_SWORD
+      type: DEAL_DAMAGE
+      target: {}
+      amount: 250
+
+    - id: eat_poisonous_potato
+      name: "Рискованный обед"
+      description: "Съешьте ядовитый картофель"
+      material: POISONOUS_POTATO
+      type: CONSUME_ITEM
+      target: { materials: [POISONOUS_POTATO] }
+      amount: 1
+
+    - id: boat_2km
+      name: "Мореплаватель"
+      description: "Пройдите на лодке 2 км"
+      material: OAK_BOAT
+      type: STAT_DELTA
+      target: { statistic: BOAT_ONE_CM }
+      amount: 200000
+
+    - id: bone_meal_64
+      name: "Садовник"
+      description: "Используйте костную муку 64 раза"
+      material: BONE_MEAL
+      type: USE_BONE_MEAL
+      target: {}
+      amount: 64
+
+    - id: drink_healing_2
+      name: "Целитель"
+      description: "Выпейте зелье исцеления II"
+      material: POTION
+      type: DRINK_POTION
+      target: { potion-types: [STRONG_HEALING] }
+      amount: 1
+
+    - id: get_gold_ingots_64
+      name: "Золотая лихорадка"
+      description: "Добудьте 64 золотых слитка"
+      material: GOLD_INGOT
+      type: OBTAIN_ITEM
+      target: { materials: [GOLD_INGOT] }
+      amount: 64
+
+    - id: eat_chorus_fruit
+      name: "Вкус Энда"
+      description: "Съешьте плод хоруса"
+      material: CHORUS_FRUIT
+      type: CONSUME_ITEM
+      target: { materials: [CHORUS_FRUIT] }
+      amount: 1
+
+    - id: target_bullseye
+      name: "Меткий стрелок"
+      description: "Попадите стрелой в яблочко мишени"
+      material: TARGET
+      type: TARGET_BULLSEYE
+      target: {}
+      amount: 1
+
+    - id: craft_all_pressure_plates
+      name: "Мастер нажимных плит"
+      description: "Создайте все виды нажимных плит"
+      material: OAK_PRESSURE_PLATE
+      type: CRAFT_COLLECTION
+      target:
+        materials: [OAK_PRESSURE_PLATE, SPRUCE_PRESSURE_PLATE, BIRCH_PRESSURE_PLATE, JUNGLE_PRESSURE_PLATE, ACACIA_PRESSURE_PLATE, DARK_OAK_PRESSURE_PLATE, MANGROVE_PRESSURE_PLATE, CHERRY_PRESSURE_PLATE, BAMBOO_PRESSURE_PLATE, CRIMSON_PRESSURE_PLATE, WARPED_PRESSURE_PLATE, STONE_PRESSURE_PLATE, POLISHED_BLACKSTONE_PRESSURE_PLATE, LIGHT_WEIGHTED_PRESSURE_PLATE, HEAVY_WEIGHTED_PRESSURE_PLATE]
+      amount: 15
+
+    - id: craft_all_sandstone
+      name: "Песчаный мастер"
+      description: "Создайте все виды песчаника"
+      material: SANDSTONE
+      type: CRAFT_COLLECTION
+      target:
+        materials: [SANDSTONE, CHISELED_SANDSTONE, CUT_SANDSTONE, SMOOTH_SANDSTONE]
+      amount: 4
+
+    - id: craft_all_red_sandstone
+      name: "Красный песчаник"
+      description: "Создайте все виды красного песчаника"
+      material: RED_SANDSTONE
+      type: CRAFT_COLLECTION
+      target:
+        materials: [RED_SANDSTONE, CHISELED_RED_SANDSTONE, CUT_RED_SANDSTONE, SMOOTH_RED_SANDSTONE]
+      amount: 4
+
+    - id: rename_sheep_jeb
+      name: "Радужная овца"
+      description: "Переименуйте овцу в jeb"
+      material: NAME_TAG
+      type: RENAME_ENTITY
+      target: { entity: SHEEP, name: "jeb", ignore-case: true }
+      amount: 1
+
+  HARD:
+    - id: craft_activator_rails
+      name: "Инженер путей"
+      description: "Скрафтите активирующие рельсы"
+      material: ACTIVATOR_RAIL
+      type: CRAFT_ITEM
+      target: { materials: [ACTIVATOR_RAIL] }
+      amount: 6
+
+    - id: drink_slow_falling
+      name: "Пёрышко"
+      description: "Выпейте зелье плавного падения"
+      material: POTION
+      type: DRINK_POTION
+      target: { potion-types: [SLOW_FALLING, LONG_SLOW_FALLING] }
+      amount: 1
+
+    - id: plant_nether_wart_soul_sand
+      name: "Незерский фермер"
+      description: "Посадите нарост в песок душ"
+      material: NETHER_WART
+      type: PLANT_ON
+      target: { place: NETHER_WART, on: SOUL_SAND }
+      amount: 1
+
+    - id: switch_town_chat_tc
+      name: "Городской голос"
+      description: "Перейдите в городской чат /tc"
+      material: OAK_SIGN
+      type: RUN_COMMAND
+      target: { commands: ["/tc", "/townchat", "/towny:tc"] }
+      amount: 1
+      enabled: true # требует TownyChat/перехват команды; можно выключить
+
+    - id: switch_global_chat_g
+      name: "На весь мир"
+      description: "Перейдите в глобальный чат /g"
+      material: GOAT_HORN
+      type: RUN_COMMAND
+      target: { commands: ["/g", "/global", "/general"] }
+      amount: 1
+      enabled: true
+
+    - id: play_30_min
+      name: "Ветеран сессии"
+      description: "Наиграйте 30 минут"
+      material: CLOCK
+      type: PLAY_TIME
+      target: {}
+      amount: 1800 # секунды
+
+    - id: collect_honey_bottle
+      name: "Пчеловод"
+      description: "Заберите бутыль мёда из улья"
+      material: HONEY_BOTTLE
+      type: COLLECT_HONEY_BOTTLE
+      target: {}
+      amount: 1
+
+    - id: hit_player_mace
+      name: "Тяжёлый удар"
+      description: "Ударьте игрока булавой"
+      material: MACE
+      type: HIT_PLAYER_WITH_ITEM
+      target: { materials: [MACE] }
+      amount: 1
+
+    - id: rename_sheep_dinnerbone
+      name: "Вверх ногами"
+      description: "Переименуйте овцу в Dinnerbone"
+      material: NAME_TAG
+      type: RENAME_ENTITY
+      target: { entity: SHEEP, name: "Dinnerbone", ignore-case: true }
+      amount: 1
+
+    - id: collect_all_wool_colors
+      name: "Коллекционер шерсти"
+      description: "Заполучите все виды цветной шерсти"
+      material: WHITE_WOOL
+      type: OBTAIN_COLLECTION
+      target:
+        materials: [WHITE_WOOL, ORANGE_WOOL, MAGENTA_WOOL, LIGHT_BLUE_WOOL, YELLOW_WOOL, LIME_WOOL, PINK_WOOL, GRAY_WOOL, LIGHT_GRAY_WOOL, CYAN_WOOL, PURPLE_WOOL, BLUE_WOOL, BROWN_WOOL, GREEN_WOOL, RED_WOOL, BLACK_WOOL]
+      amount: 16
+
+    - id: flint_and_steel_creeper
+      name: "Опасная искра"
+      description: "Используйте огниво на крипере"
+      material: FLINT_AND_STEEL
+      type: IGNITE_ENTITY
+      target: { entity: CREEPER }
+      amount: 1
+
+    - id: trample_farmland
+      name: "Неосторожный шаг"
+      description: "Растопчите грядку"
+      material: FARMLAND
+      type: TRAMPLE_FARMLAND
+      target: {}
+      amount: 1
+
+    - id: craft_bundle
+      name: "Мешочек"
+      description: "Создайте мешочек"
+      material: BUNDLE
+      type: CRAFT_ITEM
+      target: { materials: [BUNDLE] }
+      amount: 1
+
+    - id: minecart_1km
+      name: "Железнодорожник"
+      description: "Проедьте на вагонетке 1 км"
+      material: MINECART
+      type: STAT_DELTA
+      target: { statistic: MINECART_ONE_CM }
+      amount: 100000
+
+    - id: shoot_player_spectral_arrow
+      name: "Подсветка цели"
+      description: "Выстрелите в игрока спектральной стрелой"
+      material: SPECTRAL_ARROW
+      type: SHOOT_PLAYER
+      target: { projectile: SPECTRAL_ARROW }
+      amount: 1
+
+    - id: break_diamond_pickaxe
+      name: "До последнего удара"
+      description: "Сломайте алмазную кирку"
+      material: DIAMOND_PICKAXE
+      type: ITEM_BREAK
+      target: { materials: [DIAMOND_PICKAXE] }
+      amount: 1
+
+    - id: no_sleep_3_days
+      name: "Бессонница"
+      description: "Не спите 3 игровых дня подряд"
+      material: RED_BED
+      type: NO_SLEEP_DAYS
+      target: {}
+      amount: 3
+      enabled: true # кастомный трекер; можно отключить если нестабильно
+
+    - id: eat_golden_apple
+      name: "Золотой перекус"
+      description: "Съешьте золотое яблоко"
+      material: GOLDEN_APPLE
+      type: CONSUME_ITEM
+      target: { materials: [GOLDEN_APPLE] }
+      amount: 1
+
+    - id: drink_turtle_master
+      name: "Черепашья мощь"
+      description: "Выпейте зелье черепашьей мощи"
+      material: POTION
+      type: DRINK_POTION
+      target: { potion-types: [TURTLE_MASTER, LONG_TURTLE_MASTER, STRONG_TURTLE_MASTER] }
+      amount: 1
+
+    - id: elytra_3km
+      name: "Небесный странник"
+      description: "Преодолейте 3 км на элитрах"
+      material: ELYTRA
+      type: STAT_DELTA
+      target: { statistic: AVIATE_ONE_CM }
+      amount: 300000
+
+    - id: block_trident_shield
+      name: "Щит против трезубца"
+      description: "Отразите щитом брошенный трезубец"
+      material: SHIELD
+      type: BLOCK_TRIDENT
+      target: {}
+      amount: 1
+
+    - id: snowball_blaze
+      name: "Снежный бой"
+      description: "Метните снежком в ифрита"
+      material: SNOWBALL
+      type: HIT_ENTITY_PROJECTILE
+      target: { projectile: SNOWBALL, entity: BLAZE }
+      amount: 1
+
+    - id: craft_wolf_armor
+      name: "Друг защитника"
+      description: "Создайте волчью броню"
+      material: WOLF_ARMOR
+      type: CRAFT_ITEM
+      target: { materials: [WOLF_ARMOR] }
+      amount: 1
+
+    - id: fill_shulker_beetroot_soup_27
+      name: "Суповой склад"
+      description: "Набейте шалкер 27 свекольными супами"
+      material: BEETROOT_SOUP
+      type: FILL_SHULKER
+      target: { item: BEETROOT_SOUP, slots: 27 }
+      amount: 1
+      enabled: true # проверка при закрытии контейнера
+
+    - id: smelt_gold_ore_64
+      name: "Плавильня"
+      description: "Переплавьте 64 золотой руды"
+      material: RAW_GOLD
+      type: FURNACE_EXTRACT
+      target: { sources: [GOLD_ORE, DEEPSLATE_GOLD_ORE, RAW_GOLD, NETHER_GOLD_ORE] }
+      amount: 64
+
+    - id: smith_netherite
+      name: "Незеритовое улучшение"
+      description: "Примените незерит на столе кузнеца"
+      material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+      type: SMITHING_NETHERITE
+      target: {}
+      amount: 1
+
+    - id: anvil_combine
+      name: "Кузнец"
+      description: "Объедините предметы на наковальне"
+      material: ANVIL
+      type: ANVIL_COMBINE
+      target: {}
+      amount: 1
+
+    - id: build_iron_golem
+      name: "Создатель голема"
+      description: "Создайте железного голема"
+      material: CARVED_PUMPKIN
+      type: BUILD_IRON_GOLEM
+      target: {}
+      amount: 1
+
+    - id: craft_firework_3_64
+      name: "Пиротехник"
+      description: "Создайте 64 фейерверка 3 уровня"
+      material: FIREWORK_ROCKET
+      type: CRAFT_FIREWORK_POWER
+      target: { power: 3 }
+      amount: 64
+
+    - id: craft_jack_o_lantern
+      name: "Светильник Джека"
+      description: "Скрафтите светильник Джека"
+      material: JACK_O_LANTERN
+      type: CRAFT_ITEM
+      target: { materials: [JACK_O_LANTERN] }
+      amount: 1

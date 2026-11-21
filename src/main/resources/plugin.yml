@@ -1,0 +1,32 @@
+name: CloudRewards
+version: '${project.version}'
+main: ru.cloudwars.cloudrewards.CloudRewardsPlugin
+api-version: '1.21'
+author: CloudWars
+softdepend: [CoolContainers] # обмен работает в STUB без него; с ним — через API
+
+commands:
+  missions:
+    description: Открыть меню миссий
+    usage: /missions
+    permission: cloudrewards.command.missions
+  cloudrewards:
+    description: Администрирование CloudRewards
+    usage: /cloudrewards <reload|reset|giveshard|setprogress>
+    permission: cloudrewards.admin
+
+permissions:
+  cloudrewards.command.missions:
+    description: Доступ к /missions
+    default: false
+  cloudrewards.admin:
+    description: Админ-доступ к CloudRewards
+    default: op
+  cloudrewards.admin.reload:
+    default: op
+  cloudrewards.admin.reset:
+    default: op
+  cloudrewards.admin.giveshard:
+    default: op
+  cloudrewards.admin.setprogress:
+    default: op

@@ -1,0 +1,24 @@
+prefix: "<!italic><gray>[</gray><gradient:#C084FC:#7C3AED><bold>CloudRewards</bold></gradient><gray>]</gray> "
+
+no-permission: "{prefix}<red>У вас нет прав на это действие."
+player-only: "{prefix}<red>Команда доступна только игрокам."
+reload: "{prefix}<green>Конфигурация перезагружена."
+reset: "{prefix}<green>Ротация миссий принудительно обновлена."
+
+mission-complete: "{prefix}<white>Миссия выполнена: <gradient:#C084FC:#7C3AED><bold>{mission}</bold></gradient><white>.</white>"
+reward-given: "{prefix}<white>Вы получили <#C084FC>{amount}⟡</#C084FC> <white>шард(ов).</white>"
+reward-no-space: "{prefix}<red>Недостаточно места в инвентаре для награды! Освободите <white>{slots}</white> слот(а) и откройте <white>/missions</white><red>.</red>"
+reward-pending-claim: "{prefix}<yellow>У вас есть невостребованная награда. Освободите место и нажмите на миссию в /missions."
+bonus-given: "{prefix}<white>Бонус за все миссии: <#C084FC>+{amount}⟡</#C084FC><white>.</white>"
+all-complete: "{prefix}<gradient:#E9D5FF:#A855F7><bold>Все ежедневные миссии выполнены!</bold></gradient>"
+
+exchange-success: "{prefix}<white>Обмен успешен! Потрачено <#C084FC>{cost}⟡</#C084FC><white>. Награда: <#C084FC>{reward}</#C084FC><white>.</white>"
+exchange-not-enough: "{prefix}<red>Недостаточно шардов: <white>{have}</white><gray>/</gray><white>{cost}</white><red>.</red>"
+exchange-cooldown: "{prefix}<red>Подождите перед следующим обменом."
+exchange-stub: "{prefix}<#C084FC>⟡ <white>Обмен засчитан (режим заглушки). Подключите CoolContainers для выдачи ключей.</white>"
+exchange-failed: "{prefix}<red>Не удалось выдать ключ через CoolContainers. Шарды возвращены.</red>"
+
+admin-giveshard: "{prefix}<green>Выдано <white>{amount}</white> шард(ов) игроку <white>{player}</white>.</green>"
+admin-setprogress: "{prefix}<green>Прогресс <white>{player}</white> по миссии <white>{mission}</white> установлен на <white>{value}</white>.</green>"
+admin-player-not-found: "{prefix}<red>Игрок не найден.</red>"
+admin-mission-not-found: "{prefix}<red>Миссия не найдена в текущей ротации.</red>"
