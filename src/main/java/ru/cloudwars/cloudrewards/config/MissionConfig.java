@@ -1,6 +1,7 @@
 package ru.cloudwars.cloudrewards.config;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.cloudwars.cloudrewards.mission.MissionDefinition;
 import ru.cloudwars.cloudrewards.mission.MissionDifficulty;
@@ -29,13 +30,10 @@ public final class MissionConfig {
         pools.clear();
         for (MissionDifficulty difficulty : MissionDifficulty.values()) {
             List<MissionDefinition> list = new ArrayList<>();
-            ConfigurationSection pool = config.missions().getConfigurationSection("pools." + difficulty.name());
-            if (pool == null) {
-                pools.put(difficulty, list);
-                continue;
-            }
-            for (Object value : pool.getValues(false).values()) {
-                if (!(value instanceof ConfigurationSection section)) continue;
+            // missions.yml хранит пулы списками: getConfigurationSection() для них возвращает null.
+            for (Object value : entries(config.missions().get("pools." + difficulty.name()))) {
+                ConfigurationSection section = asSection(value);
+                if (section == null) continue;
                 MissionDefinition definition = parse(section, difficulty);
                 if (definition == null) continue;
                 list.add(definition);
@@ -46,9 +44,28 @@ public final class MissionConfig {
         }
     }
 
+    private static List<?> entries(Object raw) {
+        if (raw instanceof List<?> list) return list;
+        if (raw instanceof ConfigurationSection section) return new ArrayList<>(section.getValues(false).values());
+        if (raw instanceof Map<?, ?> map) return new ArrayList<>(map.values());
+        return List.of();
+    }
+
+    private static ConfigurationSection asSection(Object value) {
+        if (value instanceof ConfigurationSection section) return section;
+        if (value instanceof Map<?, ?> map) {
+            YamlConfiguration wrapper = new YamlConfiguration();
+            map.forEach((key, entry) -> wrapper.set(String.valueOf(key), entry));
+            return wrapper;
+        }
+        return null;
+    }
+
     private MissionDefinition parse(ConfigurationSection section, MissionDifficulty difficulty) {
-        String key = section.getName();
-        String id = section.getString("id", key);
+        String fallbackId = section.getName();
+        String id = section.getString("id", fallbackId == null ? "" : fallbackId);
+        if (id == null || id.isBlank()) return null;
+
         String typeName = section.getString("type", "");
         MissionType type;
         try {
@@ -57,8 +74,7 @@ public final class MissionConfig {
             plugin.getLogger().warning("Неизвестный тип миссии '" + typeName + "' у " + id + " — миссия отключена");
             type = null;
         }
-        ConfigurationSection targetSection = section.getConfigurationSection("target");
-        Map<String, Object> target = targetSection == null ? Map.of() : targetSection.getValues(true);
+
         return new MissionDefinition(
                 id,
                 section.getString("name", id),
@@ -66,9 +82,19 @@ public final class MissionConfig {
                 section.getString("material", "PAPER"),
                 difficulty,
                 type,
-                target,
+                targetMap(section.get("target")),
                 Math.max(1, section.getInt("amount", 1)),
                 section.getBoolean("enabled", true) && type != null);
+    }
+
+    private static Map<String, Object> targetMap(Object raw) {
+        if (raw instanceof ConfigurationSection section) return section.getValues(true);
+        if (raw instanceof Map<?, ?> map) {
+            YamlConfiguration wrapper = new YamlConfiguration();
+            map.forEach((key, value) -> wrapper.set(String.valueOf(key), value));
+            return wrapper.getValues(true);
+        }
+        return Map.of();
     }
 
     public List<MissionDefinition> pool(MissionDifficulty difficulty) {

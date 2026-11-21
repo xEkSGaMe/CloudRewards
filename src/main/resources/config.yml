@@ -87,7 +87,7 @@ rewards:
 
 shard:
   material: PRISMARINE_CRYSTALS
-  name: "<!italic><#C084FC>⟡ <gradient:#E9D5FF:#A855F7:#7C3AED><bold>Шард</bold></gradient>"
+  name: "<!italic><#B388FF><bold>⟡ Шард</bold>"
   custom-model-data: 0
   glint: true
   hide-flags: true

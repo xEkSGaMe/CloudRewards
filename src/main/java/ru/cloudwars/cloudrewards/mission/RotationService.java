@@ -38,6 +38,11 @@ public final class RotationService {
         if (current == null || !current.rotationDate().equals(today)) {
             rotate();
         }
+        if (current == null) {
+            plugin.getLogger().severe("Не удалось создать ротацию — проверьте missions.yml. Плагин отключается.");
+            Bukkit.getPluginManager().disablePlugin(plugin);
+            return;
+        }
         schedule();
     }
 
@@ -89,6 +94,10 @@ public final class RotationService {
 
         List<String> ids = new ArrayList<>(normal);
         ids.addAll(hard);
+        if (ids.size() < 3) {
+            plugin.getLogger().severe("В missions.yml слишком мало активных миссий: нужно минимум 2 NORMAL и 1 HARD.");
+            return;
+        }
         current = RotationState.of(date,
                 TimeUtil.nextResetEpochMs(now, config.resetTime()), ids, previous);
         storage.saveRotation(current);
