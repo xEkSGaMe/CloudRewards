@@ -3,6 +3,7 @@ package ru.cloudwars.cloudrewards.listener;
 import io.papermc.paper.event.block.TargetHitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -36,13 +37,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.cloudwars.cloudrewards.config.MissionConfig;
 import ru.cloudwars.cloudrewards.mission.ActiveMission;
 import ru.cloudwars.cloudrewards.mission.MissionDefinition;
 import ru.cloudwars.cloudrewards.mission.MissionService;
 import ru.cloudwars.cloudrewards.mission.MissionType;
 import ru.cloudwars.cloudrewards.mission.MissionTypeHandler;
-import ru.cloudwars.cloudrewards.mission.ProgressService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,16 +51,11 @@ public final class ProgressListener implements Listener {
 
     private final JavaPlugin plugin;
     private final MissionService missions;
-    private final MissionConfig missionConfig;
-    private final ProgressService progress;
     private final Map<UUID, Long> lastDay = new HashMap<>();
 
-    public ProgressListener(JavaPlugin plugin, MissionService missions,
-                            MissionConfig missionConfig, ProgressService progress) {
+    public ProgressListener(JavaPlugin plugin, MissionService missions) {
         this.plugin = plugin;
         this.missions = missions;
-        this.missionConfig = missionConfig;
-        this.progress = progress;
         startTickTask();
     }
 
@@ -70,6 +64,11 @@ public final class ProgressListener implements Listener {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 apply(player, MissionType.PLAY_TIME, 1, null);
                 UUID uuid = player.getUniqueId();
+                // Резервный опрос: события статистики на некоторых версиях ядра
+                // приходят нерегулярно, а дистанция должна считаться всегда.
+                for (Statistic statistic : missions.trackedStatistics(uuid)) {
+                    missions.syncStatistic(player, statistic);
+                }
                 long day = player.getWorld().getFullTime() / 24000L;
                 Long previous = lastDay.put(uuid, day);
                 if (previous != null && day > previous) {
@@ -108,12 +107,7 @@ public final class ProgressListener implements Listener {
 
     @EventHandler
     public void onStatistic(PlayerStatisticIncrementEvent event) {
-        int delta = event.getNewValue() - event.getPreviousValue();
-        Material material = event.getMaterial();
-        apply(event.getPlayer(), MissionType.STAT_DELTA, delta, definition ->
-                MissionTypeHandler.statistic(definition, event.getStatistic())
-                        && (definition.strings("materials").isEmpty()
-                        || (material != null && MissionTypeHandler.material(definition, material))));
+        missions.syncStatistic(event.getPlayer(), event.getStatistic());
     }
 
     @EventHandler
@@ -354,6 +348,7 @@ public final class ProgressListener implements Listener {
         if (!inventory.getType().name().contains("SHULKER")) return;
 
         for (ActiveMission mission : missions.active(player.getUniqueId())) {
+            if (!missions.isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
             MissionDefinition definition = mission.definition();
             if (definition.type() != MissionType.FILL_SHULKER) continue;
             String itemName = definition.text("item", "");
@@ -363,7 +358,8 @@ public final class ProgressListener implements Listener {
                 if (item != null && item.getType().name().equalsIgnoreCase(itemName)) count += item.getAmount();
             }
             if (count >= needed && !mission.completed()) {
-                progress.increment(player.getUniqueId(), definition.id(), 1);
+                apply(player, MissionType.FILL_SHULKER, 1,
+                        candidate -> candidate.id().equals(definition.id()));
             }
         }
     }

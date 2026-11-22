@@ -35,6 +35,7 @@ public final class RewardService {
     /** Повторная попытка выдачи всех pending-наград (join / открытие меню). */
     public void claimAll(Player player) {
         for (ActiveMission mission : missions.active(player.getUniqueId())) {
+            if (!missions.isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
             if (mission.canClaim()) claim(player, mission);
         }
         tryBonus(player);
@@ -42,6 +43,7 @@ public final class RewardService {
 
     /** Клик по карточке миссии. */
     public void claimSlot(Player player, String slotKey) {
+        if (!missions.isUnlocked(player.getUniqueId(), slotKey)) return;
         ActiveMission mission = missions.bySlot(player.getUniqueId(), slotKey);
         if (mission == null) return;
         // Pending-награда повторно выдаётся по клику, если место освободилось.
@@ -53,7 +55,7 @@ public final class RewardService {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         ActiveMission mission = missions.byId(uuid, missionId);
-        if (mission != null) claim(player, mission);
+        if (mission != null && missions.isUnlocked(uuid, mission.slotKey())) claim(player, mission);
     }
 
     private boolean claim(Player player, ActiveMission mission) {

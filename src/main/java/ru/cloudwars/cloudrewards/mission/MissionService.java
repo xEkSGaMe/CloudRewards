@@ -1,5 +1,6 @@
 package ru.cloudwars.cloudrewards.mission;
 
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import ru.cloudwars.cloudrewards.config.MissionConfig;
 import ru.cloudwars.cloudrewards.storage.PlayerMissionState;
@@ -53,9 +54,42 @@ public final class MissionService {
         return "";
     }
 
+    /** Порядок: обычная -> сложная -> обычная. Следующая открывается только после выполнения предыдущей. */
+    public boolean isUnlocked(UUID uuid, String slotKey) {
+        if (slotKey == null || slotKey.isBlank()) return true;
+        return switch (slotKey) {
+            case "hard" -> completed(uuid, "normal-1");
+            case "normal-2" -> completed(uuid, "hard");
+            default -> true;
+        };
+    }
+
+    private boolean completed(UUID uuid, String slotKey) {
+        ActiveMission mission = bySlot(uuid, slotKey);
+        return mission != null && mission.completed();
+    }
+
+    /** Слот предыдущей миссии в цепочке (для подсказки в закрытой карточке). */
+    public String previousSlotKey(String slotKey) {
+        return switch (slotKey) {
+            case "hard" -> "normal-1";
+            case "normal-2" -> "hard";
+            default -> null;
+        };
+    }
+
+    /** Имя предыдущей миссии для сообщения «выполните сначала её». */
+    public String previousMissionName(UUID uuid, String slotKey) {
+        String previous = previousSlotKey(slotKey);
+        if (previous == null) return "предыдущую миссию";
+        ActiveMission mission = bySlot(uuid, previous);
+        return mission == null ? "предыдущую миссию" : mission.definition().name();
+    }
+
     public void apply(Player player, MissionType type, int amount, Predicate<MissionDefinition> filter) {
         if (amount <= 0) return;
         for (ActiveMission mission : active(player.getUniqueId())) {
+            if (!isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
             MissionDefinition definition = mission.definition();
             if (!definition.enabled() || definition.type() != type) continue;
             if (filter != null && !filter.test(definition)) continue;
@@ -63,8 +97,38 @@ public final class MissionService {
         }
     }
 
+    /** Статистики, которые нужно опрашивать для активных миссий игрока. */
+    public List<Statistic> trackedStatistics(UUID uuid) {
+        List<Statistic> result = new ArrayList<>();
+        for (ActiveMission mission : active(uuid)) {
+            if (!isUnlocked(uuid, mission.slotKey())) continue;
+            MissionDefinition definition = mission.definition();
+            if (!definition.enabled() || definition.type() != MissionType.STAT_DELTA) continue;
+            String name = definition.text("statistic", "");
+            if (name.isEmpty()) continue;
+            try {
+                result.add(Statistic.valueOf(name.toUpperCase()));
+            } catch (IllegalArgumentException ignored) {
+                // неизвестная статистика просто не отслеживается
+            }
+        }
+        return result;
+    }
+
+    /** Надёжное обновление дистанционных миссий: событие статистики + резервный опрос. */
+    public void syncStatistic(Player player, Statistic statistic) {
+        for (ActiveMission mission : active(player.getUniqueId())) {
+            if (!isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
+            MissionDefinition definition = mission.definition();
+            if (!definition.enabled() || definition.type() != MissionType.STAT_DELTA) continue;
+            if (!MissionTypeHandler.statistic(definition, statistic)) continue;
+            progress.syncStatistic(player, statistic, definition.id());
+        }
+    }
+
     public void applyUnique(Player player, MissionType type, String key, Predicate<MissionDefinition> filter) {
         for (ActiveMission mission : active(player.getUniqueId())) {
+            if (!isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
             MissionDefinition definition = mission.definition();
             if (!definition.enabled() || definition.type() != type) continue;
             if (filter != null && !filter.test(definition)) continue;
@@ -73,7 +137,10 @@ public final class MissionService {
     }
 
     public int completedCount(UUID uuid) {
-        return (int) active(uuid).stream().filter(ActiveMission::completed).count();
+        return (int) active(uuid).stream()
+                .filter(mission -> isUnlocked(uuid, mission.slotKey()))
+                .filter(ActiveMission::completed)
+                .count();
     }
 
     public boolean allClaimed(UUID uuid) {

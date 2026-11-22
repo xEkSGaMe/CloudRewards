@@ -27,6 +27,7 @@ public final class CloudRewardsPlugin extends JavaPlugin {
     private ConfigManager config;
     private Storage storage;
     private RotationService rotation;
+    private MenuService menus;
 
     @Override
     public void onEnable() {
@@ -50,7 +51,7 @@ public final class CloudRewardsPlugin extends JavaPlugin {
         ShardService shards = new ShardService(this, config);
         shards.load();
         MissionService missions = new MissionService(missionConfig, rotation, progress);
-        MenuService menus = new MenuService(this, config, messages, missions, rotation, shards);
+        menus = new MenuService(this, config, messages, missions, rotation, shards);
         RewardService rewards = new RewardService(config, messages, missions, progress, shards, menus);
         progress.setRewardService(rewards);
 
@@ -69,9 +70,9 @@ public final class CloudRewardsPlugin extends JavaPlugin {
             getCommand("cloudrewards").setTabCompleter(adminCommand);
         }
 
-        register(new GuiListener(config, messages, menus, rewards, exchange));
+        register(new GuiListener(config, messages, menus, missions, rewards, exchange));
         register(new JoinListener(this, rewards, menus));
-        register(new ProgressListener(this, missions, missionConfig, progress));
+        register(new ProgressListener(this, missions));
 
         rotation.initialize();
         getLogger().info("CloudRewards включён. Ресет ежедневно в "
@@ -84,6 +85,7 @@ public final class CloudRewardsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (menus != null) menus.shutdown();
         if (rotation != null) rotation.shutdown();
         if (storage != null) storage.close();
     }

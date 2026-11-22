@@ -9,11 +9,29 @@ import ru.cloudwars.cloudrewards.util.ItemUtil;
 import ru.cloudwars.cloudrewards.util.TimeUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
 public final class ConfigManager {
+
+    private static final List<String> CONFIG_MIGRATIONS = List.of(
+            "gui.main.title",
+            "gui.main.items.missions.name",
+            "gui.main.items.help.name",
+            "gui.main.items.exchange.name",
+            "gui.main.items.help.lore",
+            "gui.missions.title",
+            "gui.missions.info-item.name",
+            "gui.missions.locked-item.lore");
+    private static final List<String> MESSAGE_MIGRATIONS = List.of(
+            "prefix", "mission-complete", "mission-locked", "all-complete");
+    private static final List<String> NEW_COLOR_MARKERS = List.of(
+            "&#7422EE", "&#22BCEE", "&#F2C6DE");
 
     private final JavaPlugin plugin;
     private FileConfiguration config;
@@ -37,6 +55,11 @@ public final class ConfigManager {
         messages = loadFile("messages.yml");
         missions = loadFile("missions.yml");
 
+        // Файлы могут быть созданы предыдущей версией плагина — подтягиваем
+        // только те ключи, которые всё ещё содержат старые градиенты/подсказки.
+        migrate(config, "config.yml", CONFIG_MIGRATIONS);
+        migrate(messages, "messages.yml", MESSAGE_MIGRATIONS);
+
         zone = TimeUtil.zone(config.getString("timezone", "Europe/Moscow"));
         resetTime = TimeUtil.parseTime(config.getString("reset-time", "13:00"));
         shard = parseShard();
@@ -51,6 +74,47 @@ public final class ConfigManager {
         File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) plugin.saveResource(name, false);
         return YamlConfiguration.loadConfiguration(file);
+    }
+
+    /** Обновить только устаревшие значения из свежей копии ресурса, не трогая остальные настройки. */
+    private void migrate(FileConfiguration target, String fileName, List<String> paths) {
+        InputStream resource = plugin.getResource(fileName);
+        if (resource == null) return;
+        FileConfiguration defaults;
+        try (InputStreamReader reader = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+            defaults = YamlConfiguration.loadConfiguration(reader);
+        } catch (IOException ex) {
+            return;
+        }
+
+        boolean changed = false;
+        for (String path : paths) {
+            Object current = target.get(path);
+            Object fresh = defaults.get(path);
+            if (fresh == null || fresh.equals(current) || !legacy(current)) continue;
+            target.set(path, fresh);
+            changed = true;
+        }
+        if (changed) {
+            try {
+                target.save(new File(plugin.getDataFolder(), fileName));
+            } catch (IOException ex) {
+                plugin.getLogger().warning("Не удалось сохранить обновлённый " + fileName + ": " + ex.getMessage());
+            }
+        }
+    }
+
+    private static boolean legacy(Object value) {
+        if (value instanceof String text) {
+            return (text.contains("<gradient:")
+                    && NEW_COLOR_MARKERS.stream().noneMatch(text::contains))
+                    || text.contains("{previous}");
+        }
+        if (value instanceof List<?> lines) {
+            return lines.stream().anyMatch(line -> line instanceof String text
+                    && (text.contains("{previous}") || text.contains("с подсказкой")));
+        }
+        return false;
     }
 
     private ShardSettings parseShard() {

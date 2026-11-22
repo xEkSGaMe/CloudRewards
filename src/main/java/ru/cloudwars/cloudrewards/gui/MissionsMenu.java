@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.cloudwars.cloudrewards.config.ConfigManager;
 import ru.cloudwars.cloudrewards.mission.ActiveMission;
 import ru.cloudwars.cloudrewards.mission.MissionService;
+import ru.cloudwars.cloudrewards.mission.MissionType;
 import ru.cloudwars.cloudrewards.mission.RotationService;
 import ru.cloudwars.cloudrewards.util.ItemUtil;
 import ru.cloudwars.cloudrewards.util.TextUtil;
@@ -20,14 +21,14 @@ import java.util.Map;
 public final class MissionsMenu {
 
     private static final String NAME_TEMPLATE =
-            "<!italic><gray>[</gray>{diff_color}⟡<gray>]</gray> <gradient:{g1}:{g2}><bold>{mission_name}</bold></gradient>";
+            "<!italic><gray>[</gray><{color}>⟡<gray>]</gray> <gradient:{color}:{color2}><bold>{mission_name}</bold></gradient>";
 
     private static final List<String> LORE_TEMPLATE = List.of(
-            "<!italic>{diff_color}⟡ <white>{mission_description}</white>",
+            "<!italic><{color}>⟡ <white>{mission_description}</white>",
             "",
             "<!italic><gray>• <white>Сложность: {difficulty_label}</white></gray>",
-            "<!italic><gray>• <white>Прогресс: <gradient:{g1}:{g2}>{current}</gradient><gray>/</gray><white>{target}</white></gray>",
-            "<!italic><gray>• <white>Награда: <#C084FC>{reward} шард ⟡</#C084FC></white></gray>",
+            "<!italic><gray>• <white>Прогресс: <gradient:{color}:{color2}>{current}</gradient><gray>/</gray><white>{target}{unit}</white></gray>",
+            "<!italic><gray>• <white>Награда: <{color}>{reward} шард</white></gray>",
             "",
             "<!italic><gray>Обновление: <white>ежедневно в {reset_time} МСК</white></gray>",
             "");
@@ -49,19 +50,8 @@ public final class MissionsMenu {
         int infoSlot = slots.getInt("info", 4);
         int backSlot = slots.getInt("back", 22);
 
-        Map<String, Object> common = TextUtil.vars(
-                "reset_time", config.resetTimeText(),
-                "time_left", TimeUtil.timeLeft(rotation.current().nextResetEpochMs()),
-                "completed", missions.completedCount(player.getUniqueId()));
-
-        ConfigurationSection infoSection = section.getConfigurationSection("info-item");
-        if (infoSection != null && infoSlot >= 0 && infoSlot < size) {
-            ItemStack info = ItemUtil.stack(infoSection.getString("material"), 1);
-            ItemUtil.decorate(info,
-                    TextUtil.replace(infoSection.getString("name", ""), common),
-                    infoSection.getStringList("lore").stream()
-                            .map(line -> TextUtil.replace(line, common))
-                            .toList());
+        ItemStack info = infoItem(config, missions, rotation, player);
+        if (info != null && infoSlot >= 0 && infoSlot < size) {
             inventory.setItem(infoSlot, info);
         }
 
@@ -72,29 +62,77 @@ public final class MissionsMenu {
             inventory.setItem(backSlot, back);
         }
 
+        // Порядок слотов: обычная -> сложная -> обычная.
         for (String slotKey : List.of("normal-1", "hard", "normal-2")) {
             int slot = slots.getInt(slotKey, -1);
             if (slot < 0 || slot >= size) continue;
-            ActiveMission mission = missions.bySlot(player.getUniqueId(), slotKey);
-            if (mission == null) continue;
-            inventory.setItem(slot, card(config, mission));
+
+            ItemStack item = missionSlotItem(config, missions, player, slotKey);
+            if (item != null) inventory.setItem(slot, item);
         }
         return inventory;
+    }
+
+    /** Обновить часы и карточки в уже открытом меню — без пересоздания инвентаря. */
+    public static void refreshLive(ConfigManager config, MissionService missions,
+                                   RotationService rotation, Player player, Inventory inventory) {
+        ConfigurationSection section = config.section("gui.missions");
+        if (section == null) return;
+        ConfigurationSection slots = section.getConfigurationSection("slots");
+        if (slots == null) return;
+
+        int infoSlot = slots.getInt("info", 4);
+        if (infoSlot >= 0 && infoSlot < inventory.getSize()) {
+            ItemStack info = infoItem(config, missions, rotation, player);
+            if (info != null) inventory.setItem(infoSlot, info);
+        }
+        for (String slotKey : List.of("normal-1", "hard", "normal-2")) {
+            int slot = slots.getInt(slotKey, -1);
+            if (slot < 0 || slot >= inventory.getSize()) continue;
+            ItemStack item = missionSlotItem(config, missions, player, slotKey);
+            if (item != null) inventory.setItem(slot, item);
+        }
+    }
+
+    private static ItemStack missionSlotItem(ConfigManager config, MissionService missions,
+                                             Player player, String slotKey) {
+        if (!missions.isUnlocked(player.getUniqueId(), slotKey)) return locked(config);
+        ActiveMission mission = missions.bySlot(player.getUniqueId(), slotKey);
+        return mission == null ? null : card(config, mission);
+    }
+
+    private static ItemStack infoItem(ConfigManager config, MissionService missions,
+                                      RotationService rotation, Player player) {
+        ConfigurationSection infoSection = config.section("gui.missions.info-item");
+        if (infoSection == null) return null;
+
+        var rotationState = rotation.current();
+        Map<String, Object> common = TextUtil.vars(
+                "reset_time", config.resetTimeText(),
+                "time_left", rotationState == null ? "—"
+                        : TimeUtil.timeLeft(rotationState.nextResetEpochMs()),
+                "completed", missions.completedCount(player.getUniqueId()));
+
+        ItemStack info = ItemUtil.stack(infoSection.getString("material"), 1);
+        ItemUtil.decorate(info,
+                TextUtil.replace(infoSection.getString("name", ""), common),
+                infoSection.getStringList("lore").stream()
+                        .map(line -> TextUtil.replace(line, common))
+                        .toList());
+        return info;
     }
 
     private static ItemStack card(ConfigManager config, ActiveMission mission) {
         var definition = mission.definition();
         Map<String, Object> vars = TextUtil.vars(
-                "diff_color", definition.difficulty().color(),
-                "g1", definition.difficulty().gradientStart(),
-                "g2", definition.difficulty().gradientEnd(),
+                "color", definition.color(),
+                "color2", definition.color2(),
                 "mission_name", definition.name(),
                 "mission_description", definition.description(),
                 "difficulty_label", definition.difficulty().label(),
-                "current", mission.progress(),
-                "target", mission.target(),
                 "reward", Math.max(1, config.shardsPerMission()),
                 "reset_time", config.resetTimeText());
+        vars.putAll(progress(mission));
 
         List<String> lore = new ArrayList<>();
         for (String line : LORE_TEMPLATE) lore.add(TextUtil.replace(line, vars));
@@ -105,17 +143,52 @@ public final class MissionsMenu {
         return item;
     }
 
+    private static ItemStack locked(ConfigManager config) {
+        ConfigurationSection section = config.section("gui.missions.locked-item");
+        ItemStack item = ItemUtil.stack(
+                section == null ? "BARRIER" : section.getString("material", "BARRIER"), 1);
+        String name = section == null ? "<gray>Неизвестная миссия</gray>"
+                : section.getString("name", "Неизвестная миссия");
+        List<String> lore = section == null
+                ? List.of("<!italic><gray>Эта миссия пока скрыта.</gray>")
+                : section.getStringList("lore");
+        ItemUtil.decorate(item, name, lore);
+        return item;
+    }
+
+    /**
+     * Статистика расстояния в Minecraft считается в сантиметрах, время — в секундах.
+     * В меню показываем человекочитаемые метры/минуты, не меняя внутренний прогресс.
+     */
+    private static Map<String, Object> progress(ActiveMission mission) {
+        int current = mission.progress();
+        int target = mission.target();
+        String unit = "";
+        var definition = mission.definition();
+        if (definition.type() == MissionType.STAT_DELTA
+                && definition.text("statistic", "").toUpperCase().endsWith("_ONE_CM")) {
+            current /= 100;
+            target /= 100;
+            unit = " м";
+        } else if (definition.type() == MissionType.PLAY_TIME) {
+            current /= 60;
+            target /= 60;
+            unit = " мин";
+        }
+        return TextUtil.vars("current", current, "target", target, "unit", unit);
+    }
+
     private static List<String> status(ActiveMission mission) {
         if (mission.completed() && mission.claimed()) {
-            return List.of("<green>✓ Выполнено</green>");
+            return List.of("<!italic><green>✓ Выполнено</green>");
         }
         if (mission.completed() && mission.pending()) {
-            return List.of("<red>✖ Освободите место в инвентаре</red>",
-                    "<yellow>▸ ЛКМ — забрать награду</yellow>");
+            return List.of("<!italic><red>✖ Освободите место в инвентаре</red>",
+                    "<!italic><yellow>▸ ЛКМ — забрать награду</yellow>");
         }
         if (mission.completed()) {
-            return List.of("<yellow>▸ ЛКМ — забрать награду</yellow>");
+            return List.of("<!italic><yellow>▸ ЛКМ — забрать награду</yellow>");
         }
-        return List.of("<yellow>▸ В процессе</yellow>");
+        return List.of("<!italic><yellow>▸ В процессе</yellow>");
     }
 }

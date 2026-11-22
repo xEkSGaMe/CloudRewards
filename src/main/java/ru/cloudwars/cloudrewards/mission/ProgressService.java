@@ -1,6 +1,7 @@
 package ru.cloudwars.cloudrewards.mission;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.cloudwars.cloudrewards.config.ConfigManager;
@@ -27,6 +28,8 @@ public final class ProgressService {
     private final Storage storage;
     private final MessageService messages;
     private final Map<String, Set<String>> uniqueCache = new ConcurrentHashMap<>();
+    /** Последние замеченные значения статистики, чтобы не считать дистанцию дважды. */
+    private final Map<String, Integer> lastStatistic = new ConcurrentHashMap<>();
     private RewardService rewards;
 
     public ProgressService(JavaPlugin plugin, ConfigManager config, MissionConfig missionConfig,
@@ -58,6 +61,19 @@ public final class ProgressService {
         PlayerMissionState state = state(uuid, missionId);
         if (state.completed() || state.claimed()) return;
         applyProgress(uuid, missionId, state.progress() + delta, null);
+    }
+
+    /**
+     * Синхронизация накопительной статистики (расстояние лодкой/плаванием/элитрами).
+     * И событие, и опрос тикают через этот метод, поэтому дельта применяется один раз.
+     */
+    public void syncStatistic(Player player, Statistic statistic, String missionId) {
+        String key = player.getUniqueId() + "|" + rotation.current().rotationDate()
+                + "|" + statistic.name() + "|" + missionId;
+        int current = player.getStatistic(statistic);
+        Integer previous = lastStatistic.put(key, current);
+        if (previous == null || current <= previous) return;
+        increment(player.getUniqueId(), missionId, current - previous);
     }
 
     public void setProgress(UUID uuid, String missionId, int value) {

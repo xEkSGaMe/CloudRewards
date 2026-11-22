@@ -1,6 +1,8 @@
 pools:
   NORMAL:
     - id: break_diamond_ore_4
+      color: "#FF8C8C"
+      color2: "#D17373"
       name: "Добыть алмазную руду"
       description: "Сломайте 4 алмазной руды"
       material: DIAMOND_ORE
@@ -9,6 +11,8 @@ pools:
       amount: 4
 
     - id: eat_pufferfish
+      color: "#8CAEFF"
+      color2: "#738ED1"
       name: "Опасная закуска"
       description: "Съешьте иглобрюха"
       material: PUFFERFISH
@@ -17,6 +21,8 @@ pools:
       amount: 1
 
     - id: swim_1km
+      color: "#CFFF8C"
+      color2: "#AAD173"
       name: "Пловец"
       description: "Проплывите 1 км"
       material: WATER_BUCKET
@@ -25,6 +31,8 @@ pools:
       amount: 100000
 
     - id: deal_damage_250
+      color: "#FF8CF1"
+      color2: "#D173C5"
       name: "Боец"
       description: "Нанесите 250 урона"
       material: IRON_SWORD
@@ -33,6 +41,8 @@ pools:
       amount: 250
 
     - id: eat_poisonous_potato
+      color: "#8CFFEC"
+      color2: "#73D1C1"
       name: "Рискованный обед"
       description: "Съешьте ядовитый картофель"
       material: POISONOUS_POTATO
@@ -41,6 +51,8 @@ pools:
       amount: 1
 
     - id: boat_2km
+      color: "#FFCA8C"
+      color2: "#D1A673"
       name: "Мореплаватель"
       description: "Пройдите на лодке 2 км"
       material: OAK_BOAT
@@ -49,6 +61,8 @@ pools:
       amount: 200000
 
     - id: bone_meal_64
+      color: "#A98CFF"
+      color2: "#8A73D1"
       name: "Садовник"
       description: "Используйте костную муку 64 раза"
       material: BONE_MEAL
@@ -57,6 +71,8 @@ pools:
       amount: 64
 
     - id: drink_healing_2
+      color: "#91FF8C"
+      color2: "#77D173"
       name: "Целитель"
       description: "Выпейте зелье исцеления II"
       material: POTION
@@ -65,6 +81,8 @@ pools:
       amount: 1
 
     - id: get_gold_ingots_64
+      color: "#FF8CB3"
+      color2: "#D17392"
       name: "Золотая лихорадка"
       description: "Добудьте 64 золотых слитка"
       material: GOLD_INGOT
@@ -73,6 +91,8 @@ pools:
       amount: 64
 
     - id: eat_chorus_fruit
+      color: "#8CD4FF"
+      color2: "#73AED1"
       name: "Вкус Энда"
       description: "Съешьте плод хоруса"
       material: CHORUS_FRUIT
@@ -81,6 +101,8 @@ pools:
       amount: 1
 
     - id: target_bullseye
+      color: "#F6FF8C"
+      color2: "#C9D173"
       name: "Меткий стрелок"
       description: "Попадите стрелой в яблочко мишени"
       material: TARGET
@@ -89,6 +111,8 @@ pools:
       amount: 1
 
     - id: craft_all_pressure_plates
+      color: "#E78CFF"
+      color2: "#BD73D1"
       name: "Мастер нажимных плит"
       description: "Создайте все виды нажимных плит"
       material: OAK_PRESSURE_PLATE
@@ -98,6 +122,8 @@ pools:
       amount: 15
 
     - id: craft_all_sandstone
+      color: "#8CFFC5"
+      color2: "#73D1A2"
       name: "Песчаный мастер"
       description: "Создайте все виды песчаника"
       material: SANDSTONE
@@ -107,6 +133,8 @@ pools:
       amount: 4
 
     - id: craft_all_red_sandstone
+      color: "#FFA48C"
+      color2: "#D18673"
       name: "Красный песчаник"
       description: "Создайте все виды красного песчаника"
       material: RED_SANDSTONE
@@ -116,6 +144,8 @@ pools:
       amount: 4
 
     - id: rename_sheep_jeb
+      color: "#8C96FF"
+      color2: "#737BD1"
       name: "Радужная овца"
       description: "Переименуйте овцу в jeb"
       material: NAME_TAG
@@ -125,6 +155,8 @@ pools:
 
   HARD:
     - id: craft_activator_rails
+      color: "#B8FF8C"
+      color2: "#96D173"
       name: "Инженер путей"
       description: "Скрафтите активирующие рельсы"
       material: ACTIVATOR_RAIL
@@ -133,6 +165,8 @@ pools:
       amount: 6
 
     - id: drink_slow_falling
+      color: "#FF8CD9"
+      color2: "#D173B2"
       name: "Пёрышко"
       description: "Выпейте зелье плавного падения"
       material: POTION
@@ -141,6 +175,8 @@ pools:
       amount: 1
 
     - id: plant_nether_wart_soul_sand
+      color: "#8CFAFF"
+      color2: "#73CDD1"
       name: "Незерский фермер"
       description: "Посадите нарост в песок душ"
       material: NETHER_WART
@@ -149,6 +185,8 @@ pools:
       amount: 1
 
     - id: switch_town_chat_tc
+      color: "#FFE28C"
+      color2: "#D1B973"
       name: "Городской голос"
       description: "Перейдите в городской чат /tc"
       material: OAK_SIGN
@@ -158,6 +196,8 @@ pools:
       enabled: true # требует TownyChat/перехват команды; можно выключить
 
     - id: switch_global_chat_g
+      color: "#C18CFF"
+      color2: "#9E73D1"
       name: "На весь мир"
       description: "Перейдите в глобальный чат /g"
       material: GOAT_HORN
@@ -167,6 +207,8 @@ pools:
       enabled: true
 
     - id: play_30_min
+      color: "#8CFF9F"
+      color2: "#73D182"
       name: "Ветеран сессии"
       description: "Наиграйте 30 минут"
       material: CLOCK
@@ -175,6 +217,8 @@ pools:
       amount: 1800 # секунды
 
     - id: collect_honey_bottle
+      color: "#FF8C9B"
+      color2: "#D1737F"
       name: "Пчеловод"
       description: "Заберите бутыль мёда из улья"
       material: HONEY_BOTTLE
@@ -183,6 +227,8 @@ pools:
       amount: 1
 
     - id: hit_player_mace
+      color: "#8CBCFF"
+      color2: "#739AD1"
       name: "Тяжёлый удар"
       description: "Ударьте игрока булавой"
       material: MACE
@@ -191,6 +237,8 @@ pools:
       amount: 1
 
     - id: rename_sheep_dinnerbone
+      color: "#DEFF8C"
+      color2: "#B6D173"
       name: "Вверх ногами"
       description: "Переименуйте овцу в Dinnerbone"
       material: NAME_TAG
@@ -199,6 +247,8 @@ pools:
       amount: 1
 
     - id: collect_all_wool_colors
+      color: "#FF8CFF"
+      color2: "#D173D1"
       name: "Коллекционер шерсти"
       description: "Заполучите все виды цветной шерсти"
       material: WHITE_WOOL
@@ -208,6 +258,8 @@ pools:
       amount: 16
 
     - id: flint_and_steel_creeper
+      color: "#8CFFDD"
+      color2: "#73D1B5"
       name: "Опасная искра"
       description: "Используйте огниво на крипере"
       material: FLINT_AND_STEEL
@@ -216,6 +268,8 @@ pools:
       amount: 1
 
     - id: trample_farmland
+      color: "#FFBC8C"
+      color2: "#D19A73"
       name: "Неосторожный шаг"
       description: "Растопчите грядку"
       material: FARMLAND
@@ -224,6 +278,8 @@ pools:
       amount: 1
 
     - id: craft_bundle
+      color: "#9A8CFF"
+      color2: "#7E73D1"
       name: "Мешочек"
       description: "Создайте мешочек"
       material: BUNDLE
@@ -232,6 +288,8 @@ pools:
       amount: 1
 
     - id: minecart_1km
+      color: "#A0FF8C"
+      color2: "#83D173"
       name: "Железнодорожник"
       description: "Проедьте на вагонетке 1 км"
       material: MINECART
@@ -240,6 +298,8 @@ pools:
       amount: 100000
 
     - id: shoot_player_spectral_arrow
+      color: "#FF8CC1"
+      color2: "#D1739E"
       name: "Подсветка цели"
       description: "Выстрелите в игрока спектральной стрелой"
       material: SPECTRAL_ARROW
@@ -248,6 +308,8 @@ pools:
       amount: 1
 
     - id: break_diamond_pickaxe
+      color: "#8CE3FF"
+      color2: "#73BAD1"
       name: "До последнего удара"
       description: "Сломайте алмазную кирку"
       material: DIAMOND_PICKAXE
@@ -256,6 +318,8 @@ pools:
       amount: 1
 
     - id: no_sleep_3_days
+      color: "#FFFA8C"
+      color2: "#D1CD73"
       name: "Бессонница"
       description: "Не спите 3 игровых дня подряд"
       material: RED_BED
@@ -265,6 +329,8 @@ pools:
       enabled: true # кастомный трекер; можно отключить если нестабильно
 
     - id: eat_golden_apple
+      color: "#D88CFF"
+      color2: "#B173D1"
       name: "Золотой перекус"
       description: "Съешьте золотое яблоко"
       material: GOLDEN_APPLE
@@ -273,6 +339,8 @@ pools:
       amount: 1
 
     - id: drink_turtle_master
+      color: "#8CFFB7"
+      color2: "#73D196"
       name: "Черепашья мощь"
       description: "Выпейте зелье черепашьей мощи"
       material: POTION
@@ -281,6 +349,8 @@ pools:
       amount: 1
 
     - id: elytra_3km
+      color: "#FF958C"
+      color2: "#D17A73"
       name: "Небесный странник"
       description: "Преодолейте 3 км на элитрах"
       material: ELYTRA
@@ -289,6 +359,8 @@ pools:
       amount: 300000
 
     - id: block_trident_shield
+      color: "#8CA5FF"
+      color2: "#7387D1"
       name: "Щит против трезубца"
       description: "Отразите щитом брошенный трезубец"
       material: SHIELD
@@ -297,6 +369,8 @@ pools:
       amount: 1
 
     - id: snowball_blaze
+      color: "#C6FF8C"
+      color2: "#A2D173"
       name: "Снежный бой"
       description: "Метните снежком в ифрита"
       material: SNOWBALL
@@ -305,6 +379,8 @@ pools:
       amount: 1
 
     - id: craft_wolf_armor
+      color: "#FF8CE8"
+      color2: "#D173BE"
       name: "Друг защитника"
       description: "Создайте волчью броню"
       material: WOLF_ARMOR
@@ -313,6 +389,8 @@ pools:
       amount: 1
 
     - id: fill_shulker_beetroot_soup_27
+      color: "#8CFFF5"
+      color2: "#73D1C9"
       name: "Суповой склад"
       description: "Набейте шалкер 27 свекольными супами"
       material: BEETROOT_SOUP
@@ -322,6 +400,8 @@ pools:
       enabled: true # проверка при закрытии контейнера
 
     - id: smelt_gold_ore_64
+      color: "#FFD38C"
+      color2: "#D1AD73"
       name: "Плавильня"
       description: "Переплавьте 64 золотой руды"
       material: RAW_GOLD
@@ -330,6 +410,8 @@ pools:
       amount: 64
 
     - id: smith_netherite
+      color: "#B28CFF"
+      color2: "#9273D1"
       name: "Незеритовое улучшение"
       description: "Примените незерит на столе кузнеца"
       material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
@@ -338,6 +420,8 @@ pools:
       amount: 1
 
     - id: anvil_combine
+      color: "#8CFF90"
+      color2: "#73D176"
       name: "Кузнец"
       description: "Объедините предметы на наковальне"
       material: ANVIL
@@ -346,6 +430,8 @@ pools:
       amount: 1
 
     - id: build_iron_golem
+      color: "#FF8CAA"
+      color2: "#D1738B"
       name: "Создатель голема"
       description: "Создайте железного голема"
       material: CARVED_PUMPKIN
@@ -354,6 +440,8 @@ pools:
       amount: 1
 
     - id: craft_firework_3_64
+      color: "#8CCBFF"
+      color2: "#73A6D1"
       name: "Пиротехник"
       description: "Создайте 64 фейерверка 3 уровня"
       material: FIREWORK_ROCKET
@@ -362,6 +450,8 @@ pools:
       amount: 64
 
     - id: craft_jack_o_lantern
+      color: "#EDFF8C"
+      color2: "#C2D173"
       name: "Светильник Джека"
       description: "Скрафтите светильник Джека"
       material: JACK_O_LANTERN

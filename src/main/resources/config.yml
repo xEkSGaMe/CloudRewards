@@ -3,7 +3,7 @@ reset-time: "13:00" # HH:mm
 
 gui:
   main:
-    title: "<!italic><gradient:#C084FC:#7C3AED><bold>Миссии CloudWars</bold></gradient>"
+    title: "<!italic><bold>&#7422EEМ&#7C20EEи&#841EEDс&#8B1BEDс&#9319ECи&#9B17ECи</bold>"
     size: 27
     filler:
       enabled: true
@@ -13,48 +13,55 @@ gui:
       missions:
         slot: 11
         material: NETHER_STAR
-        name: "<!italic><gray>[</gray><#C084FC>⟡<gray>]</gray> <gradient:#E9D5FF:#A855F7><bold>Миссии</bold></gradient>"
+        name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <bold>&#7422EEМ&#7C20EEи&#841EEDс&#8B1BEDс&#9319ECи&#9B17ECи</bold>"
         lore:
-          - "<!italic><gray>Ежедневные задания CloudWars</gray>"
+          - "<!italic><gray>Ежедневные задания</gray>"
           - ""
-          - "<!italic><#C084FC>• <white>Обычных: <gray>2</gray></white>"
-          - "<!italic><#C084FC>• <white>Сложная: <gray>1</gray></white>"
-          - "<!italic><#C084FC>• <white>Обновление: <gray>{reset_time} МСК</gray></white>"
+          - "<!italic><#B388FF>• <white>Обычных: <gray>2</gray></white>"
+          - "<!italic><#B388FF>• <white>Сложных: <gray>1</gray></white>"
+          - "<!italic><#B388FF>• <white>Обновление: <gray>{reset_time} МСК</gray></white>"
           - ""
           - "<!italic><yellow>▸ ЛКМ — открыть миссии</yellow>"
       help:
         slot: 13
         material: KNOWLEDGE_BOOK
-        name: "<!italic><gray>[</gray><#7DD3FC>?<gray>]</gray> <gradient:#BAE6FD:#38BDF8><bold>Помощь</bold></gradient>"
+        name: "<!italic><gray>[</gray><#38BDF8>?<gray>]</gray> <bold>&#22BCEEП&#20BDEEо&#1EBEEDм&#1BBFEDо&#19C0ECщ&#17C1ECь</bold>"
         lore:
           - "<!italic><#7DD3FC>⟡ <white>Что такое миссии?</white>"
           - "<!italic><gray>Ежедневные задания, которые обновляются</gray>"
           - "<!italic><gray>каждый день в <white>{reset_time} по МСК</white><gray>.</gray>"
           - ""
           - "<!italic><#7DD3FC>⟡ <white>Награды</white>"
-          - "<!italic><gray>• <white>За каждую миссию: <#C084FC>1 шард ⟡</#C084FC></white>"
-          - "<!italic><gray>• <white>За все 3 миссии: <#C084FC>+2 шарда ⟡</#C084FC></white>"
+          - "<!italic><gray>• <white>За каждую миссию: <#B388FF>1 шард</#B388FF></white>"
+          - "<!italic><gray>• <white>За все 3 миссии: <#B388FF>+2 шарда</#B388FF></white>"
+          - ""
+          - "<!italic><#7DD3FC>⟡ <white>Порядок миссий</white>"
+          - "<!italic><gray><white>1.</white> Обычная <gray>→</gray> <white>2.</white> Сложная <gray>→</gray> <white>3.</white> Обычная</gray>"
+          - "<!italic><gray>Миссии выполняются строго по порядку:</gray>"
+          - "<!italic><gray>пока не выполнена текущая, следующая</gray>"
+          - "<!italic><gray>скрыта и не засчитывается. Вместо неё</gray>"
+          - "<!italic><gray>вы увидите неизвестную миссию без подсказок.</gray>"
           - ""
           - "<!italic><#7DD3FC>⟡ <white>Что такое шарды?</white>"
-          - "<!italic><gray>Шарды — особая миссионная валюта.</gray>"
-          - "<!italic><gray>Их можно обменять на ключи Сокровищницы.</gray>"
+          - "<!italic><gray>Шарды — особая валюта.</gray>"
+          - "<!italic><gray>Её можно обменять на ключи Сокровищницы.</gray>"
       exchange:
         slot: 15
         material: AMETHYST_CLUSTER
-        name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <gradient:#E9D5FF:#A855F7:#7C3AED><bold>Обмен</bold></gradient>"
+        name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <bold>&#F2C6DEОбмен</bold>"
         lore:
-          - "<!italic><#C084FC>⟡ <white>Ваши шарды: <gradient:#E9D5FF:#A855F7>{shards}</gradient></white>"
+          - "<!italic><white>Ваши шарды: <#B388FF><bold>{shards} ⟡</bold></white>"
           - ""
-          - "<!italic><gray>Курс: <#C084FC>20 ⟡</#C084FC> <gray>=</gray> <white>1 ключ Сокровищницы</white>"
+          - "<!italic><gray>Курс: <#B388FF>20 ⟡</#B388FF> <gray>=</gray> <white>1 ключ Сокровищницы</white>"
           - "<!italic><gray>Шансы:</gray>"
-          - "<!italic><gray> • <white>Малый ключ: <#C084FC>50%</#C084FC></white>"
-          - "<!italic><gray> • <white>Средний ключ: <#C084FC>25%</#C084FC></white>"
-          - "<!italic><gray> • <white>Большой ключ: <#C084FC>25%</#C084FC></white>"
+          - "<!italic><gray> • <white>Малый ключ: <#B388FF>50%</#B388FF></white>"
+          - "<!italic><gray> • <white>Средний ключ: <#B388FF>25%</#B388FF></white>"
+          - "<!italic><gray> • <white>Большой ключ: <#B388FF>25%</#B388FF></white>"
           - ""
           - "<!italic><yellow>▸ ЛКМ — обменять 20 шардов</yellow>"
 
   missions:
-    title: "<!italic><gradient:#C084FC:#7C3AED><bold>Ежедневные миссии</bold></gradient>"
+    title: "<!italic><white>&#9515F1Е&#9615EFж&#9815ECе&#9914EAд&#9B14E8н&#9C14E5е&#9D14E3в&#9F14E0н&#A014DEы&#A113DCе &#A413D7м&#A613D5и&#A713D2с&#A812D0с&#AA12CDи&#AB12CBи"
     size: 27
     filler:
       enabled: true
@@ -73,12 +80,21 @@ gui:
         - "<!italic><dark_gray>Вернуться в главное меню</dark_gray>"
     info-item:
       material: CLOCK
-      name: "<!italic><gray>[</gray><#C084FC>⟡<gray>]</gray> <gradient:#E9D5FF:#A855F7><bold>Информация</bold></gradient>"
+      name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <gradient:#EDE9FE:#C084FC:#7C3AED><bold>Информация</bold></gradient>"
       lore:
         - "<!italic><gray>Обновление: <white>{reset_time} МСК</white></gray>"
         - "<!italic><gray>До обновления: <white>{time_left}</white></gray>"
         - "<!italic><gray>Выполнено: <white>{completed}</white><gray>/</gray><white>3</white></gray>"
-        - "<!italic><gray>Бонус за все 3: <#C084FC>+2 шарда ⟡</#C084FC></gray>"
+        - "<!italic><gray>Бонус за все 3: <#B388FF>+2 шарда</#B388FF></gray>"
+    locked-item:
+      material: BARRIER
+      name: "<!italic><gray>[</gray><#6B7280><bold>?</bold><gray>]</gray> <gray>Неизвестная миссия</gray>"
+      lore:
+        - "<!italic><dark_gray>???</dark_gray>"
+        - ""
+        - "<!italic><gray>Эта миссия пока скрыта.</gray>"
+        - "<!italic><gray>Выполните предыдущую миссию,</gray>"
+        - "<!italic><gray>чтобы увидеть задание.</gray>"
 
 rewards:
   shards-per-mission: 1
@@ -87,16 +103,15 @@ rewards:
 
 shard:
   material: PRISMARINE_CRYSTALS
-  name: "<!italic><#B388FF><bold>⟡ Шард</bold>"
+  name: "<!italic><#B388FF><bold>Шард</bold>"
   custom-model-data: 0
   glint: true
   hide-flags: true
   pdc-key: "cloudrewards_shard"
   lore:
-    - "<!italic><gray>Редкость: <#C084FC>Миссионный</#C084FC></gray>"
     - ""
-    - "<!italic><#C084FC>▸ <white>Получение: <gray>за выполнение ежедневных миссий</gray></white>"
-    - "<!italic><#C084FC>▸ <white>Обмен: <gray>20 шардов = 1 ключ Сокровищницы</gray></white>"
+    - "<!italic><#B388FF>▸ <white>Получение: <gray>за выполнение ежедневных миссий</gray></white>"
+    - "<!italic><#B388FF>▸ <white>Обмен: <gray>20 шардов = 1 ключ Сокровищницы</gray></white>"
     - ""
     - "<!italic><dark_gray>Используется в /missions</dark_gray>"
 

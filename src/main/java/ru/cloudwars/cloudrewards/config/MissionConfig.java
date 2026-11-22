@@ -7,6 +7,7 @@ import ru.cloudwars.cloudrewards.mission.MissionDefinition;
 import ru.cloudwars.cloudrewards.mission.MissionDifficulty;
 import ru.cloudwars.cloudrewards.mission.MissionType;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -28,13 +29,14 @@ public final class MissionConfig {
     public void load() {
         byId.clear();
         pools.clear();
+        int colorIndex = 0;
         for (MissionDifficulty difficulty : MissionDifficulty.values()) {
             List<MissionDefinition> list = new ArrayList<>();
             // missions.yml хранит пулы списками: getConfigurationSection() для них возвращает null.
             for (Object value : entries(config.missions().get("pools." + difficulty.name()))) {
                 ConfigurationSection section = asSection(value);
                 if (section == null) continue;
-                MissionDefinition definition = parse(section, difficulty);
+                MissionDefinition definition = parse(section, difficulty, colorIndex++);
                 if (definition == null) continue;
                 list.add(definition);
                 byId.put(definition.id(), definition);
@@ -61,7 +63,7 @@ public final class MissionConfig {
         return null;
     }
 
-    private MissionDefinition parse(ConfigurationSection section, MissionDifficulty difficulty) {
+    private MissionDefinition parse(ConfigurationSection section, MissionDifficulty difficulty, int colorIndex) {
         String fallbackId = section.getName();
         String id = section.getString("id", fallbackId == null ? "" : fallbackId);
         if (id == null || id.isBlank()) return null;
@@ -75,6 +77,11 @@ public final class MissionConfig {
             type = null;
         }
 
+        String base = color(section.getString("color"), colorIndex, 1.00f);
+        // Второй стоп затемняем: из двух почти одинаковых светлых оттенков
+        // градиент на коротком названии выглядит выцветшим.
+        String end = shade(color(section.getString("color2"), colorIndex, 0.82f), 0.72f);
+
         return new MissionDefinition(
                 id,
                 section.getString("name", id),
@@ -84,7 +91,34 @@ public final class MissionConfig {
                 type,
                 targetMap(section.get("target")),
                 Math.max(1, section.getInt("amount", 1)),
-                section.getBoolean("enabled", true) && type != null);
+                section.getBoolean("enabled", true) && type != null,
+                base,
+                end);
+    }
+
+    /** Явно заданный hex или детерминированный пастельный оттенок по индексу миссии. */
+    private static String color(String raw, int index, float brightness) {
+        String explicit = normalizeHex(raw);
+        if (explicit != null) return explicit;
+        float hue = (index * 0.61803398875f) % 1.0f; // золотое сечение = равномерные оттенки
+        int rgb = Color.HSBtoRGB(hue, 0.45f, brightness);
+        return String.format("#%06X", rgb & 0xFFFFFF);
+    }
+
+    /** Тот же оттенок, но заметно глубже — для второго стопа градиента. */
+    private static String shade(String hex, float factor) {
+        int rgb = Integer.parseInt(hex.substring(1), 16);
+        float[] hsb = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
+        int shaded = Color.HSBtoRGB(hsb[0], Math.min(1f, hsb[1] * 1.08f),
+                Math.max(0.12f, hsb[2] * factor)) & 0xFFFFFF;
+        return String.format("#%06X", shaded);
+    }
+
+    private static String normalizeHex(String raw) {
+        if (raw == null || raw.isBlank()) return null;
+        String value = raw.trim();
+        if (!value.startsWith("#")) value = "#" + value;
+        return value.matches("#[0-9a-fA-F]{6}") ? value : null;
     }
 
     private static Map<String, Object> targetMap(Object raw) {

@@ -13,6 +13,7 @@ import ru.cloudwars.cloudrewards.config.ConfigManager;
 import ru.cloudwars.cloudrewards.config.MessageService;
 import ru.cloudwars.cloudrewards.gui.GuiHolder;
 import ru.cloudwars.cloudrewards.gui.MenuService;
+import ru.cloudwars.cloudrewards.mission.MissionService;
 import ru.cloudwars.cloudrewards.reward.ExchangeService;
 import ru.cloudwars.cloudrewards.reward.RewardService;
 
@@ -23,14 +24,16 @@ public final class GuiListener implements Listener {
     private final ConfigManager config;
     private final MessageService messages;
     private final MenuService menus;
+    private final MissionService missions;
     private final RewardService rewards;
     private final ExchangeService exchange;
 
     public GuiListener(ConfigManager config, MessageService messages, MenuService menus,
-                       RewardService rewards, ExchangeService exchange) {
+                       MissionService missions, RewardService rewards, ExchangeService exchange) {
         this.config = config;
         this.messages = messages;
         this.menus = menus;
+        this.missions = missions;
         this.rewards = rewards;
         this.exchange = exchange;
     }
@@ -60,10 +63,14 @@ public final class GuiListener implements Listener {
         ConfigurationSection section = config.section("gui.missions");
         ConfigurationSection slots = section.getConfigurationSection("slots");
         for (String key : List.of("normal-1", "hard", "normal-2")) {
-            if (slot == slots.getInt(key, -1)) {
-                rewards.claimSlot(player, key);
+            if (slot != slots.getInt(key, -1)) continue;
+            if (!missions.isUnlocked(player.getUniqueId(), key)) {
+                messages.send(player, "mission-locked");
+                messages.sound(player, "fail", Sound.BLOCK_NOTE_BLOCK_BASS);
                 return;
             }
+            rewards.claimSlot(player, key);
+            return;
         }
         if (slot == slots.getInt("back", -1)) menus.openMain(player);
     }
@@ -76,7 +83,7 @@ public final class GuiListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         if (menus.holderOf(event.getInventory()) != null) {
-            menus.close(event.getPlayer().getUniqueId());
+            menus.close(event.getPlayer().getUniqueId(), event.getInventory());
         }
     }
 }
