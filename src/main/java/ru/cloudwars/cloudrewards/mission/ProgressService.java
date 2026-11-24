@@ -109,7 +109,8 @@ public final class ProgressService {
 
         if (justCompleted) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player != null) messages.send(player, "mission-complete", "mission", definition.name());
+            if (player != null) messages.send(player, "mission-complete",
+                    "mission", definition.name(), "color", definition.color());
             if (rewards != null) rewards.onMissionCompleted(uuid, missionId);
         }
     }

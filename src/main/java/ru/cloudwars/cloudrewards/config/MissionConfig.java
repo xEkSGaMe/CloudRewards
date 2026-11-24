@@ -77,10 +77,7 @@ public final class MissionConfig {
             type = null;
         }
 
-        String base = color(section.getString("color"), colorIndex, 1.00f);
-        // Второй стоп затемняем: из двух почти одинаковых светлых оттенков
-        // градиент на коротком названии выглядит выцветшим.
-        String end = shade(color(section.getString("color2"), colorIndex, 0.82f), 0.72f);
+        String base = color(section.getString("color"), colorIndex);
 
         return new MissionDefinition(
                 id,
@@ -92,26 +89,16 @@ public final class MissionConfig {
                 targetMap(section.get("target")),
                 Math.max(1, section.getInt("amount", 1)),
                 section.getBoolean("enabled", true) && type != null,
-                base,
-                end);
+                base);
     }
 
     /** Явно заданный hex или детерминированный пастельный оттенок по индексу миссии. */
-    private static String color(String raw, int index, float brightness) {
+    private static String color(String raw, int index) {
         String explicit = normalizeHex(raw);
         if (explicit != null) return explicit;
         float hue = (index * 0.61803398875f) % 1.0f; // золотое сечение = равномерные оттенки
-        int rgb = Color.HSBtoRGB(hue, 0.45f, brightness);
+        int rgb = Color.HSBtoRGB(hue, 0.45f, 1.00f);
         return String.format("#%06X", rgb & 0xFFFFFF);
-    }
-
-    /** Тот же оттенок, но заметно глубже — для второго стопа градиента. */
-    private static String shade(String hex, float factor) {
-        int rgb = Integer.parseInt(hex.substring(1), 16);
-        float[] hsb = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
-        int shaded = Color.HSBtoRGB(hsb[0], Math.min(1f, hsb[1] * 1.08f),
-                Math.max(0.12f, hsb[2] * factor)) & 0xFFFFFF;
-        return String.format("#%06X", shaded);
     }
 
     private static String normalizeHex(String raw) {

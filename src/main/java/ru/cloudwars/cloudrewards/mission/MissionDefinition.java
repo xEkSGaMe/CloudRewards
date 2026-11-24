@@ -7,7 +7,7 @@ import java.util.Map;
 
 public record MissionDefinition(String id, String name, String description, String materialName,
                                 MissionDifficulty difficulty, MissionType type, Map<String, Object> target,
-                                int amount, boolean enabled, String color, String color2) {
+                                int amount, boolean enabled, String color) {
 
     public Material material() {
         Material material = Material.matchMaterial(materialName);
@@ -17,11 +17,6 @@ public record MissionDefinition(String id, String name, String description, Stri
     /** Основной цвет миссии (для иконки/заголовка). */
     public String color() {
         return color == null ? "#B388FF" : color;
-    }
-
-    /** Второй, близкий оттенок того же цвета — для короткого плавного градиента. */
-    public String color2() {
-        return color2 == null ? color() : color2;
     }
 
     public List<String> strings(String key) {

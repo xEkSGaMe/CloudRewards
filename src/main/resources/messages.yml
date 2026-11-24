@@ -5,7 +5,7 @@ player-only: "{prefix}<red>Команда доступна только игро
 reload: "{prefix}<green>Конфигурация перезагружена."
 reset: "{prefix}<green>Ротация миссий принудительно обновлена."
 
-mission-complete: "{prefix}<white>Миссия выполнена: <gradient:#D8B4FE:#A855F7:#6D28D9><bold>{mission}</bold></gradient><white>.</white>"
+mission-complete: "{prefix}<white>Миссия выполнена: <{color}><bold>{mission}</bold><white>.</white>"
 mission-locked: "{prefix}<yellow>Сначала выполните предыдущую миссию. Следующая откроется после неё.</yellow>"
 reward-given: "{prefix}<white>Вы получили <#B388FF>{amount}⟡</#B388FF> </white>"
 reward-no-space: "{prefix}<red>Недостаточно места в инвентаре для награды! Освободите <white>{slots}</white> слот(а) и откройте <white>/missions</white><red>.</red>"

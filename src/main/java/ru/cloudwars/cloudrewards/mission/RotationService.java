@@ -37,6 +37,9 @@ public final class RotationService {
         String today = TimeUtil.rotationDate(ZonedDateTime.now(config.zone()), config.resetTime());
         if (current == null || !current.rotationDate().equals(today)) {
             rotate();
+        } else {
+            // Ротации старой версии могли положить HARD в третий слот — чиним на месте.
+            ensureDifficultyLayout();
         }
         if (current == null) {
             plugin.getLogger().severe("Не удалось создать ротацию — проверьте missions.yml. Плагин отключается.");
@@ -48,6 +51,39 @@ public final class RotationService {
 
     public RotationState current() {
         return current;
+    }
+
+    /** Гарантия: 1-я и 3-я миссии обычные, 2-я всегда сложная. */
+    public void ensureDifficultyLayout() {
+        if (current == null || validLayout(current)) return;
+
+        List<String> normals = new ArrayList<>();
+        List<String> hards = new ArrayList<>();
+        for (String id : current.slots()) {
+            MissionDefinition definition = missionConfig.byId(id);
+            if (definition == null || !definition.enabled()) continue;
+            if (definition.difficulty() == MissionDifficulty.NORMAL && normals.size() < 2) normals.add(id);
+            if (definition.difficulty() == MissionDifficulty.HARD && hards.isEmpty()) hards.add(id);
+        }
+
+        if (normals.size() < 2 || hards.isEmpty()) {
+            rotate(); // в старой ротации нет подходящих миссий — выбираем заново
+            return;
+        }
+
+        current = new RotationState(current.rotationDate(), current.nextResetEpochMs(),
+                normals.get(0), hards.get(0), normals.get(1), current.previousIds());
+        storage.saveRotation(current);
+        plugin.getLogger().warning("Ротация исправлена: обычная → сложная → обычная.");
+    }
+
+    private boolean validLayout(RotationState state) {
+        MissionDefinition first = missionConfig.byId(state.missionId("normal-1"));
+        MissionDefinition second = missionConfig.byId(state.missionId("hard"));
+        MissionDefinition third = missionConfig.byId(state.missionId("normal-2"));
+        return first != null && first.enabled() && first.difficulty() == MissionDifficulty.NORMAL
+                && second != null && second.enabled() && second.difficulty() == MissionDifficulty.HARD
+                && third != null && third.enabled() && third.difficulty() == MissionDifficulty.NORMAL;
     }
 
     public void forceRotate() {
@@ -92,12 +128,12 @@ public final class RotationService {
         List<String> normal = pick(missionConfig.pool(MissionDifficulty.NORMAL), new HashSet<>(previous), 2);
         List<String> hard = pick(missionConfig.pool(MissionDifficulty.HARD), new HashSet<>(previous), 1);
 
-        List<String> ids = new ArrayList<>(normal);
-        ids.addAll(hard);
-        if (ids.size() < 3) {
+        if (normal.size() < 2 || hard.size() < 1) {
             plugin.getLogger().severe("В missions.yml слишком мало активных миссий: нужно минимум 2 NORMAL и 1 HARD.");
             return;
         }
+        // Слоты: normal-1 (12), hard (13), normal-2 (14) — сложная ВСЕГДА вторая.
+        List<String> ids = List.of(normal.get(0), hard.get(0), normal.get(1));
         current = RotationState.of(date,
                 TimeUtil.nextResetEpochMs(now, config.resetTime()), ids, previous);
         storage.saveRotation(current);

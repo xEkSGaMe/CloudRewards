@@ -97,26 +97,9 @@ public final class MissionService {
         }
     }
 
-    /** Статистики, которые нужно опрашивать для активных миссий игрока. */
-    public List<Statistic> trackedStatistics(UUID uuid) {
-        List<Statistic> result = new ArrayList<>();
-        for (ActiveMission mission : active(uuid)) {
-            if (!isUnlocked(uuid, mission.slotKey())) continue;
-            MissionDefinition definition = mission.definition();
-            if (!definition.enabled() || definition.type() != MissionType.STAT_DELTA) continue;
-            String name = definition.text("statistic", "");
-            if (name.isEmpty()) continue;
-            try {
-                result.add(Statistic.valueOf(name.toUpperCase()));
-            } catch (IllegalArgumentException ignored) {
-                // неизвестная статистика просто не отслеживается
-            }
-        }
-        return result;
-    }
-
-    /** Надёжное обновление дистанционных миссий: событие статистики + резервный опрос. */
+    /** Статистика для дистанций обрабатывается DistanceTracker — здесь только остальные типы. */
     public void syncStatistic(Player player, Statistic statistic) {
+        if (MissionTypeHandler.trackedDistance(statistic)) return;
         for (ActiveMission mission : active(player.getUniqueId())) {
             if (!isUnlocked(player.getUniqueId(), mission.slotKey())) continue;
             MissionDefinition definition = mission.definition();

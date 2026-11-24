@@ -2,6 +2,7 @@ package ru.cloudwars.cloudrewards.util;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -27,6 +28,17 @@ public final class ItemUtil {
         if (meta == null) return;
         meta.displayName(TextUtil.mm(name));
         if (lore != null) meta.lore(TextUtil.mmList(lore));
+        // Только наше оформление: ванильные строки вроде "Без эффектов",
+        // характеристик и подсказок в меню не показываем.
+        meta.addItemFlags(
+                ItemFlag.HIDE_ATTRIBUTES,
+                ItemFlag.HIDE_UNBREAKABLE,
+                ItemFlag.HIDE_DESTROYS,
+                ItemFlag.HIDE_PLACED_ON,
+                ItemFlag.HIDE_ADDITIONAL_TOOLTIP,
+                ItemFlag.HIDE_DYE,
+                ItemFlag.HIDE_ARMOR_TRIM,
+                ItemFlag.HIDE_STORED_ENCHANTS);
         item.setItemMeta(meta);
     }
 

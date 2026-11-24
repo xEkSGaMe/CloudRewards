@@ -9,6 +9,7 @@ import ru.cloudwars.cloudrewards.config.ConfigManager;
 import ru.cloudwars.cloudrewards.config.MessageService;
 import ru.cloudwars.cloudrewards.config.MissionConfig;
 import ru.cloudwars.cloudrewards.gui.MenuService;
+import ru.cloudwars.cloudrewards.listener.DistanceTracker;
 import ru.cloudwars.cloudrewards.listener.GuiListener;
 import ru.cloudwars.cloudrewards.listener.JoinListener;
 import ru.cloudwars.cloudrewards.listener.ProgressListener;
@@ -28,6 +29,7 @@ public final class CloudRewardsPlugin extends JavaPlugin {
     private Storage storage;
     private RotationService rotation;
     private MenuService menus;
+    private DistanceTracker distanceTracker;
 
     @Override
     public void onEnable() {
@@ -73,6 +75,8 @@ public final class CloudRewardsPlugin extends JavaPlugin {
         register(new GuiListener(config, messages, menus, missions, rewards, exchange));
         register(new JoinListener(this, rewards, menus));
         register(new ProgressListener(this, missions));
+        distanceTracker = new DistanceTracker(this, missions);
+        distanceTracker.start();
 
         rotation.initialize();
         getLogger().info("CloudRewards включён. Ресет ежедневно в "
@@ -85,6 +89,7 @@ public final class CloudRewardsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (distanceTracker != null) distanceTracker.stop();
         if (menus != null) menus.shutdown();
         if (rotation != null) rotation.shutdown();
         if (storage != null) storage.close();

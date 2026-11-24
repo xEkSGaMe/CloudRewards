@@ -48,11 +48,11 @@ gui:
       exchange:
         slot: 15
         material: AMETHYST_CLUSTER
-        name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <bold>&#F2C6DEОбмен</bold>"
+        name: "<!italic><gray>[</gray><#A855F7>🔁<gray>]</gray> <bold>&#F2C6DEОбмен</bold>"
         lore:
-          - "<!italic><white>Ваши шарды: <#B388FF><bold>{shards} ⟡</bold></white>"
+          - "<!italic><white>Ваши шарды: <#B388FF><bold>{shards}⟡</bold></white>"
           - ""
-          - "<!italic><gray>Курс: <#B388FF>20 ⟡</#B388FF> <gray>=</gray> <white>1 ключ Сокровищницы</white>"
+          - "<!italic><gray>Курс: <#B388FF>20⟡</#B388FF> <gray>=</gray> <white>1 ключ Сокровищницы</white>"
           - "<!italic><gray>Шансы:</gray>"
           - "<!italic><gray> • <white>Малый ключ: <#B388FF>50%</#B388FF></white>"
           - "<!italic><gray> • <white>Средний ключ: <#B388FF>25%</#B388FF></white>"
@@ -80,7 +80,7 @@ gui:
         - "<!italic><dark_gray>Вернуться в главное меню</dark_gray>"
     info-item:
       material: CLOCK
-      name: "<!italic><gray>[</gray><#A855F7>⟡<gray>]</gray> <gradient:#EDE9FE:#C084FC:#7C3AED><bold>Информация</bold></gradient>"
+      name: "<!italic><gray>[</gray><#A855F7⏰<gray>]</gray> <b><gradient:#A011E9:#9224E2>Информация</gradient></b>"
       lore:
         - "<!italic><gray>Обновление: <white>{reset_time} МСК</white></gray>"
         - "<!italic><gray>До обновления: <white>{time_left}</white></gray>"

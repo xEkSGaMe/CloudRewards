@@ -64,11 +64,7 @@ public final class ProgressListener implements Listener {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 apply(player, MissionType.PLAY_TIME, 1, null);
                 UUID uuid = player.getUniqueId();
-                // Резервный опрос: события статистики на некоторых версиях ядра
-                // приходят нерегулярно, а дистанция должна считаться всегда.
-                for (Statistic statistic : missions.trackedStatistics(uuid)) {
-                    missions.syncStatistic(player, statistic);
-                }
+                // Дистанцию считает DistanceTracker по фактическому перемещению.
                 long day = player.getWorld().getFullTime() / 24000L;
                 Long previous = lastDay.put(uuid, day);
                 if (previous != null && day > previous) {

@@ -52,6 +52,7 @@ public final class CloudRewardsCommand implements CommandExecutor, TabCompleter 
                 config.reload();
                 missionConfig.load();
                 shards.load();
+                rotation.ensureDifficultyLayout();
                 rotation.recalculateNextReset();
                 messages.send(sender, "reload");
             }

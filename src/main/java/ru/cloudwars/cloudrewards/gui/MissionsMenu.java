@@ -5,8 +5,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionType;
 import ru.cloudwars.cloudrewards.config.ConfigManager;
 import ru.cloudwars.cloudrewards.mission.ActiveMission;
+import ru.cloudwars.cloudrewards.mission.MissionDefinition;
 import ru.cloudwars.cloudrewards.mission.MissionService;
 import ru.cloudwars.cloudrewards.mission.MissionType;
 import ru.cloudwars.cloudrewards.mission.RotationService;
@@ -21,13 +24,13 @@ import java.util.Map;
 public final class MissionsMenu {
 
     private static final String NAME_TEMPLATE =
-            "<!italic><gray>[</gray><{color}>⟡<gray>]</gray> <gradient:{color}:{color2}><bold>{mission_name}</bold></gradient>";
+            "<!italic><gray>[</gray><{color}>⟡<gray>]</gray> <{color}><bold>{mission_name}</bold>";
 
     private static final List<String> LORE_TEMPLATE = List.of(
             "<!italic><{color}>⟡ <white>{mission_description}</white>",
             "",
             "<!italic><gray>• <white>Сложность: {difficulty_label}</white></gray>",
-            "<!italic><gray>• <white>Прогресс: <gradient:{color}:{color2}>{current}</gradient><gray>/</gray><white>{target}{unit}</white></gray>",
+            "<!italic><gray>• <white>Прогресс: <{color}>{current}<gray>/</gray><white>{target}{unit}</white></gray>",
             "<!italic><gray>• <white>Награда: <{color}>{reward} шард</white></gray>",
             "",
             "<!italic><gray>Обновление: <white>ежедневно в {reset_time} МСК</white></gray>",
@@ -126,7 +129,6 @@ public final class MissionsMenu {
         var definition = mission.definition();
         Map<String, Object> vars = TextUtil.vars(
                 "color", definition.color(),
-                "color2", definition.color2(),
                 "mission_name", definition.name(),
                 "mission_description", definition.description(),
                 "difficulty_label", definition.difficulty().label(),
@@ -138,8 +140,25 @@ public final class MissionsMenu {
         for (String line : LORE_TEMPLATE) lore.add(TextUtil.replace(line, vars));
         lore.addAll(status(mission));
 
-        ItemStack item = new ItemStack(definition.material(), 1);
+        ItemStack item = icon(definition);
         ItemUtil.decorate(item, TextUtil.replace(NAME_TEMPLATE, vars), lore);
+        return item;
+    }
+
+    /** Иконка зелья должна выглядеть как то зелье, которое нужно выпить. */
+    private static ItemStack icon(MissionDefinition definition) {
+        ItemStack item = ItemUtil.stack(definition.materialName(), 1);
+        if (item.getItemMeta() instanceof PotionMeta potion) {
+            String type = definition.strings("potion-types").stream().findFirst().orElse("");
+            if (!type.isBlank()) {
+                try {
+                    potion.setBasePotionType(PotionType.valueOf(type.toUpperCase()));
+                } catch (IllegalArgumentException ignored) {
+                    // неизвестный тип — остаётся обычный пузырёк
+                }
+            }
+            item.setItemMeta(potion);
+        }
         return item;
     }
 

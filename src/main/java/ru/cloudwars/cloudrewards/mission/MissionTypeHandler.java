@@ -5,12 +5,23 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
+
+import java.util.Set;
 
 /** Общие проверки target-параметров для обработчиков типов миссий. */
 public final class MissionTypeHandler {
 
+    /** Дистанции, которые считает DistanceTracker по факту перемещения. */
+    private static final Set<Statistic> TRACKED_DISTANCE = Set.of(
+            Statistic.BOAT_ONE_CM, Statistic.MINECART_ONE_CM, Statistic.AVIATE_ONE_CM,
+            Statistic.SWIM_ONE_CM, Statistic.WALK_ONE_CM);
+
     private MissionTypeHandler() {
+    }
+
+    public static boolean trackedDistance(Statistic statistic) {
+        return TRACKED_DISTANCE.contains(statistic);
     }
 
     public static boolean material(MissionDefinition definition, Material material) {
@@ -35,12 +46,8 @@ public final class MissionTypeHandler {
 
     public static String potionKey(ItemStack item) {
         if (item == null || !(item.getItemMeta() instanceof PotionMeta meta)) return "";
-        PotionData data = meta.getBasePotionData();
-        if (data == null) return "";
-        String base = data.getType().name();
-        if (data.isUpgraded()) return "STRONG_" + base;
-        if (data.isExtended()) return "LONG_" + base;
-        return base;
+        PotionType type = meta.getBasePotionType();
+        return type == null ? "" : type.name();
     }
 
     public static boolean potion(MissionDefinition definition, ItemStack item) {
