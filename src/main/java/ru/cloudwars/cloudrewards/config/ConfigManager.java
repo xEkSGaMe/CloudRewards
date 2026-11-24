@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public final class ConfigManager {
 
@@ -32,6 +33,8 @@ public final class ConfigManager {
             "prefix", "mission-complete", "mission-locked", "all-complete");
     private static final List<String> NEW_COLOR_MARKERS = List.of(
             "&#7422EE", "&#22BCEE", "&#F2C6DE");
+    /** Опечатка вида <#A855F7⏰ — MiniMessage показывает такой тег как обычный текст. */
+    private static final Pattern BROKEN_HEX_TAG = Pattern.compile("<#[0-9a-fA-F]{6}[^>]");
 
     private final JavaPlugin plugin;
     private FileConfiguration config;
@@ -108,11 +111,13 @@ public final class ConfigManager {
         if (value instanceof String text) {
             return (text.contains("<gradient:")
                     && NEW_COLOR_MARKERS.stream().noneMatch(text::contains))
+                    || BROKEN_HEX_TAG.matcher(text).find()
                     || text.contains("{previous}");
         }
         if (value instanceof List<?> lines) {
             return lines.stream().anyMatch(line -> line instanceof String text
-                    && (text.contains("{previous}") || text.contains("с подсказкой")));
+                    && (text.contains("{previous}") || text.contains("с подсказкой")
+                    || BROKEN_HEX_TAG.matcher(text).find()));
         }
         return false;
     }

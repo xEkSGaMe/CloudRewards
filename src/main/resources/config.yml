@@ -80,7 +80,7 @@ gui:
         - "<!italic><dark_gray>Вернуться в главное меню</dark_gray>"
     info-item:
       material: CLOCK
-      name: "<!italic><gray>[</gray><#A855F7⏰<gray>]</gray> <b><gradient:#A011E9:#9224E2>Информация</gradient></b>"
+      name: "<!italic><gray>[</gray><#A855F7>⏰<gray>]</gray> <b><gradient:#A011E9:#9224E2>Информация</gradient></b>"
       lore:
         - "<!italic><gray>Обновление: <white>{reset_time} МСК</white></gray>"
         - "<!italic><gray>До обновления: <white>{time_left}</white></gray>"
